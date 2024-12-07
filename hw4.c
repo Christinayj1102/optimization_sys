@@ -5,8 +5,8 @@
 // #define IDENT 1   // 곱셈 초기값 (사용 시 주석 해제)
 // #define OPER *    // 곱셈 연산자 (사용 시 주석 해제)
 
-typedef int data_t; // 연산 타입을 int로 설정
-// typedef float data_t; // float로 바꾸려면 주석 해제
+typedef float data_t; // 연산 타입을 float로 설정
+// typedef int data_t; // int로 바꾸려면 주석 해제
 
 typedef struct {
     data_t *data;
@@ -39,7 +39,7 @@ data_t *get_vec_start(vec_ptr v){
 // 벡터 요소 가져오기
 int get_vec_element(vec_ptr v, int index, data_t *data){
     if (index < 0 || index >= vec_length(v)) return 0;
-    *data = v->data[index]; // 변수명 수정 (dest -> data)
+    *data = v->data[index];
     return 1;
 }
 
@@ -107,13 +107,18 @@ void measure_performance(void (*combine)(vec_ptr, data_t *), vec_ptr v, const ch
     start = clock();
     combine(v, &result);
     end = clock();
-    printf("%s: 실행 시간 = %f초, 결과 = %d\n", label, (double)(end - start) / CLOCKS_PER_SEC, result);
+    printf("%s: 실행 시간 = %f초, 결과 = %s\n", 
+      label, 
+      (double)(end - start) / CLOCKS_PER_SEC, 
+      (sizeof(data_t) == sizeof(int)) ? "%d" : "%f", 
+      (sizeof(data_t) == sizeof(int)) ? result : (float)result
+    );
 }
 
 // 테스트 함수 = main 함수
 int main() {
     int size = 1000000; // 벡터 크기
-    data_t value = 1;   // 벡터 초기값
+    data_t value = 1.0;  // 벡터 초기값 (float로 설정)
     vec_ptr v = init_vector(size, value);
     if (v == NULL) return -1; // 메모리 할당 실패 체크
 
